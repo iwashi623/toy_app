@@ -1,0 +1,37 @@
+{
+  "name": "Rails Development",
+  "dockerFile": "../Dockerfile",
+  "mounts": [
+    {
+      "source": "${localWorkspaceFolder}",
+      "target": "/app",
+      "type": "bind"
+    }
+  ],
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "castwide.solargraph", // solargraph
+        "KoichiSasada.vscode-rdbg", // Ruby Debug
+        "bajdzis.vscode-database", // Database
+        "eamodio.gitlens", // GitLens
+        "mtxr.sqltools", // SQLTools本体
+        "mtxr.sqltools-driver-pg", // PostgreSQL用ドライバー
+        "cweijan.vscode-database-client2", // Database Client
+        "ms-azuretools.vscode-docker" // Docker
+      ],
+      "settings": {
+        "solargraph.useBundler": true,
+        "solargraph.formatting": true,
+        "solargraph.diagnostics": true,
+        "ruby.useBundler": true
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  // "postCreateCommand": "bundle install",
+  "forwardPorts": [3000]
+}
