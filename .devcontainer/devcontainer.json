@@ -4,11 +4,16 @@
   "mounts": [
     {
       "source": "${localWorkspaceFolder}",
-      "target": "/app",
+      "target": "/rails",
       "type": "bind"
     }
   ],
-  "workspaceFolder": "/app",
+  "containerEnv": {
+    "RAILS_ENV": "development",
+    "BUNDLE_DEPLOYMENT": "0",
+    "BUNDLE_WITHOUT": ""
+  },
+  "workspaceFolder": "/rails",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -32,6 +37,8 @@
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
-  // "postCreateCommand": "bundle install",
-  "forwardPorts": [3000]
+  "postCreateCommand": "apt-get update && apt-get install -y git build-essential libssl-dev zlib1g-dev libpq-dev libyaml-dev && bundle config set --local path 'vendor/bundle' && bundle install",
+  "forwardPorts": [
+    3000
+  ]
 }

@@ -11,16 +11,21 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 # Rails app lives here
 WORKDIR /rails
 
-# Install base packages
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+ARG RAILS_ENV="production"
+ARG BUNDLE_DEPLOYMENT="1"
+ARG BUNDLE_PATH="/usr/local/bundle"
+ARG BUNDLE_WITHOUT="development"
 
 # Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+ENV RAILS_ENV=${RAILS_ENV} \
+    BUNDLE_DEPLOYMENT=${BUNDLE_DEPLOYMENT} \
+    BUNDLE_PATH=${BUNDLE_PATH} \
+    BUNDLE_WITHOUT=${BUNDLE_WITHOUT}
+
+# Install base packages
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 libyaml-dev && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
@@ -45,21 +50,12 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
-
-
 # Final stage for app image
 FROM base
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
-
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER 1000:1000
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
