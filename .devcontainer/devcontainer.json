@@ -1,18 +1,26 @@
 {
   "name": "Rails Development",
-  "dockerFile": "../Dockerfile",
-  "mounts": [
-    {
-      "source": "${localWorkspaceFolder}",
-      "target": "/rails",
-      "type": "bind"
-    }
+  "dockerComposeFile": "../compose.yaml",
+  // "mounts": [
+  //   {
+  //     "source": "${localWorkspaceFolder}",
+  //     "target": "/rails",
+  //     "type": "bind"
+  //   }
+  // ],
+  "service": "app",
+  "forwardPorts": [
+    3000
   ],
-  "containerEnv": {
-    "RAILS_ENV": "development",
-    "BUNDLE_DEPLOYMENT": "0",
-    "BUNDLE_WITHOUT": ""
-  },
+  // "containerEnv": {
+  //   // "RAILS_ENV": "development",
+  //   // "BUNDLE_DEPLOYMENT": "0",
+  //   // "BUNDLE_WITHOUT": "",
+  //   // "BUNDLE_PATH": "/rails/vendor/bundle"
+  // },
+  // "remoteEnv": {
+  //   "BUNDLE_PATH": "/rails/vendor/bundle"
+  // },
   "workspaceFolder": "/rails",
   "customizations": {
     "vscode": {
@@ -37,8 +45,6 @@
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
-  "postCreateCommand": "apt-get update && apt-get install -y git build-essential libssl-dev zlib1g-dev libpq-dev libyaml-dev && bundle config set --local path 'vendor/bundle' && bundle install",
-  "forwardPorts": [
-    3000
-  ]
+  // "postStartCommand": "bin/rails s -b 0.0.0.0",
+  "postCreateCommand": "apt-get update && apt-get install -y git build-essential libssl-dev zlib1g-dev libpq-dev libyaml-dev && bundle config set --local path 'vendor/bundle' && bundle install"
 }
