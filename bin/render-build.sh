@@ -4,6 +4,4 @@ set -o errexit
 bundle install
 bundle exec rails assets:precompile
 bundle exec rails assets:clean
-# データベースディレクトリの作成
-mkdir -p /var/data
 bundle exec rails db:migrate
